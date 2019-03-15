@@ -186,6 +186,7 @@ export default class Slideshow extends Component {
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           scrollEnabled={this.props.scrollEnabled}
+          pagingEnabled={true}
           {...this._panResponder.panHandlers}
           style={[
             styles.container, 
