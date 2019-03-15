@@ -166,6 +166,14 @@ export default class Slideshow extends Component {
     }, 16);
   }
 
+  onScrollEvent = (e) => {
+    // Change the indicator on android when swiping
+    let contentOffset = e.nativeEvent.contentOffset;
+    let viewSize = e.nativeEvent.layoutMeasurement;
+    let pageNum = Math.floor(contentOffset.x / viewSize.width);
+    this.setState({position: pageNum});
+  }
+
   componentWillUnmount() {
     clearInterval(this._interval);
   }
@@ -187,6 +195,8 @@ export default class Slideshow extends Component {
           showsHorizontalScrollIndicator={false}
           scrollEnabled={this.props.scrollEnabled}
           pagingEnabled={true}
+          onScrollEndDrag={this.onScrollEvent}
+          onMomentumScrollEnd={this.onScrollEvent}
           {...this._panResponder.panHandlers}
           style={[
             styles.container, 
