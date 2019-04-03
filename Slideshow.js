@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   Image,
@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 
 const reactNativePackage = require('react-native/package.json');
+
 const splitVersion = reactNativePackage.version.split('.');
 const majorVersion = +splitVersion[0];
 const minorVersion = +splitVersion[1];
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
   indicatorSelected: {
     opacity: 1,
   },
-  containerImage : {
+  containerImage: {
     flex: 1,
     width: Dimensions.get('window').width,
   },
@@ -62,12 +63,12 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontWeight: 'bold',
-    fontSize: 15, 
+    fontSize: 15,
     color: 'white',
   },
   textCaption: {
     fontWeight: '400',
-    fontSize: 12, 
+    fontSize: 12,
     color: 'white',
   }
 });
@@ -97,9 +98,9 @@ export default class Slideshow extends Component {
     if (majorVersion === 0 && minorVersion <= 19) {
       this._ref.scrollTo(0, x, true); // use old syntax
     } else {
-      this._ref.scrollTo({x: this.state.width * index, y: 0, animated: true});
+      this._ref.scrollTo({ x: this.state.width * index, y: 0, animated: true });
     }
-    this.setState({position: index});
+    this.setState({ position: index });
     if (isUpdating && this.props.onPositionChanged) {
       this.props.onPositionChanged(index);
     }
@@ -113,15 +114,15 @@ export default class Slideshow extends Component {
   }
 
   _next() {
-    const pos = this.state.position === this.props.dataSource.length-1 ? 0 : this.state.position + 1;
+    const pos = this.state.position === this.props.dataSource.length - 1 ? 0 : this.state.position + 1;
     this._move(pos);
-    this.setState({position: pos});
+    this.setState({ position: pos });
   }
 
   _prev() {
-    const pos = this.state.position === 0 ? this.props.dataSource.length-1 : this.state.position - 1;
+    const pos = this.state.position === 0 ? this.props.dataSource.length - 1 : this.state.position - 1;
     this._move(pos);
-    this.setState({position: pos});
+    this.setState({ position: pos });
   }
 
   componentDidUpdate(prevProps) {
@@ -131,12 +132,12 @@ export default class Slideshow extends Component {
   }
 
   componentWillMount() {
-    const width = this.state.width;
+    const { width } = this.state;
 
-    let release = (e, gestureState) => {
-      const width = this.state.width;
+    const release = (e, gestureState) => {
+      const { width } = this.state;
       const relativeDistance = gestureState.dx / width;
-      const vx = gestureState.vx;
+      const { vx } = gestureState;
       let change = 0;
 
       if (relativeDistance < -0.5 || (relativeDistance < 0 && vx <= 0.5)) {
@@ -161,7 +162,7 @@ export default class Slideshow extends Component {
     this._interval = setInterval(() => {
       const newWidth = Dimensions.get('window').width;
       if (newWidth !== this.state.width) {
-        this.setState({width: newWidth});
+        this.setState({ width: newWidth });
       }
     }, 16);
   }
@@ -171,7 +172,7 @@ export default class Slideshow extends Component {
   }
 
   render() {
-    const width = this.state.width;
+    const { width } = this.state;
     const height = this.props.height || this.state.height;
     const position = this._getPosition();
     return (
@@ -333,31 +334,27 @@ Slideshow.defaultProps = {
   indicatorSelectedColor: '#FFFFFF',
   scrollEnabled: true,
   arrowSize: 16,
-  displaySideArrows: true,
-  displayPageIndicator: true,
-}
+};
 
 Slideshow.propTypes = {
-	dataSource: PropTypes.arrayOf(PropTypes.shape({
+  dataSource: PropTypes.arrayOf(PropTypes.shape({
 	    title: PropTypes.string,
 	    caption: PropTypes.string,
 	    url: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    })).isRequired, 
-	indicatorSize: PropTypes.number,
-	indicatorColor: PropTypes.string,
-	indicatorSelectedColor: PropTypes.string,
-	height: PropTypes.number,
-	position: PropTypes.number,
+  })).isRequired,
+  indicatorSize: PropTypes.number,
+  indicatorColor: PropTypes.string,
+  indicatorSelectedColor: PropTypes.string,
+  height: PropTypes.number,
+  position: PropTypes.number,
   scrollEnabled: PropTypes.bool,
   containerStyle: PropTypes.object,
   overlay: PropTypes.bool,
-	arrowSize: PropTypes.number,
+  arrowSize: PropTypes.number,
   arrowLeft: PropTypes.object,
   arrowRight: PropTypes.object,
-	onPress: PropTypes.func,
+  onPress: PropTypes.func,
   onPositionChanged: PropTypes.func,
-  displayPageIndicator: PropTypes.bool,
-  displaySideArrows: PropTypes.bool,
 };
 
 const setIndicatorSize = function (size) {
@@ -366,13 +363,13 @@ const setIndicatorSize = function (size) {
     height: size,
     borderRadius: size / 2,
   };
-}
+};
 
 const setIndicatorColor = function (color) {
   return {
     backgroundColor: color,
   };
-}
+};
 
 const layoutArrow = function (imageHeight, iconHeight) {
   return {
@@ -380,39 +377,39 @@ const layoutArrow = function (imageHeight, iconHeight) {
     backgroundColor: 'transparent',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    top: (imageHeight-iconHeight)/2,
-    bottom: (imageHeight-iconHeight)/2,
+    top: (imageHeight - iconHeight) / 2,
+    bottom: (imageHeight - iconHeight) / 2,
   };
-}
+};
 
 const iconArrow = function (iconHeight) {
   return {
-     width: 0,
-     height: 0,
-     margin: 5,
-     backgroundColor: 'transparent',
-     borderStyle: 'solid',
-     borderTopColor: 'transparent',
-     borderBottomColor: 'transparent',
-     borderTopWidth: iconHeight/2,
-     borderBottomWidth: iconHeight/2,
+    width: 0,
+    height: 0,
+    margin: 5,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderTopWidth: iconHeight / 2,
+    borderBottomWidth: iconHeight / 2,
   };
-}
+};
 
 const iconArrowRight = function (iconHeight) {
   return {
-     borderRightWidth: 0,
-     borderLeftWidth: iconHeight*75/100,
-     borderRightColor: 'transparent',
-     borderLeftColor: 'white',
+    borderRightWidth: 0,
+    borderLeftWidth: iconHeight * 75 / 100,
+    borderRightColor: 'transparent',
+    borderLeftColor: 'white',
   };
-}
+};
 
 const iconArrowLeft = function (iconHeight) {
   return {
-     borderRightWidth: iconHeight*75/100,
-     borderLeftWidth: 0,
-     borderRightColor: 'white',
-     borderLeftColor: 'transparent',
+    borderRightWidth: iconHeight * 75 / 100,
+    borderLeftWidth: 0,
+    borderRightColor: 'white',
+    borderLeftColor: 'transparent',
   };
-}
+};
