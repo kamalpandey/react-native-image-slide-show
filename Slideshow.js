@@ -176,23 +176,25 @@ export default class Slideshow extends Component {
     const position = this._getPosition();
     return (
       <View style={[
-          this.props.containerStyle,
-          { height: height }
-        ]}>
+        this.props.containerStyle,
+        { height }
+      ]}
+      >
         {/* SECTION IMAGE */}
         <ScrollView
           ref={ref => this._onRef(ref)}
           decelerationRate={0.99}
-          horizontal={true}
+          horizontal
           showsHorizontalScrollIndicator={false}
           scrollEnabled={this.props.scrollEnabled}
           {...this._panResponder.panHandlers}
           style={[
-            styles.container, 
-            { height: height }
-          ]}>
+            styles.container,
+            { height }
+          ]}
+        >
           {this.props.dataSource.map((image, index) => {
-            const imageObject = typeof image.url === 'string' ? {uri: image.url} : image.url;
+            const imageObject = typeof image.url === 'string' ? { uri: image.url } : image.url;
             const textComponent = (
               <View style={styles.layoutText}>
                 {image.title === undefined ? null : <Text style={this.props.titleStyle}>{image.title}</Text>}
@@ -203,7 +205,8 @@ export default class Slideshow extends Component {
               <View key={index}>
                 <Image
                   source={imageObject}
-                  style={{height, width}} resizeMode="cover" />
+                  style={{ height, width }}
+                />
                 {textComponent}
               </View>
             );
@@ -212,7 +215,8 @@ export default class Slideshow extends Component {
                 <View style={styles.overlay}>
                   <Image
                     source={imageObject}
-                    style={{height, width}} resizeMode="cover" />
+                    style={{ height, width }}
+                  />
                 </View>
                 {textComponent}
               </View>
@@ -221,87 +225,102 @@ export default class Slideshow extends Component {
               return (
                 <TouchableOpacity
                   key={index}
-                  style={{height, width}}
-                  onPress={() => this.props.onPress({image, index})}
-                  delayPressIn={200}>
+                  style={{ height, width }}
+                  onPress={() => this.props.onPress({ image, index })}
+                  delayPressIn={200}
+                >
                   {this.props.overlay ? imageComponentWithOverlay : imageComponent}
                 </TouchableOpacity>
               );
-            } else {
-              return this.props.overlay ? imageComponentWithOverlay : imageComponent 
             }
+            return this.props.overlay ? imageComponentWithOverlay : imageComponent;
           })}
         </ScrollView>
         {/* END SECTION IMAGE */}
-        {/* SECTION INDICATOR */}
-        <View 
-          style={[
-            styles.layoutIndicator, 
-          ]}>
-          {this.props.dataSource.map((image, index) => {
-            return (
+        {this.props.displayPageIndicator
+        && (
+          <View
+            style={[
+              styles.layoutIndicator,
+            ]}
+          >
+            {this.props.dataSource.map((image, index) => (
               <TouchableOpacity
                 key={index}
-                onPress={() => { return this._move(index); }}
+                onPress={() => this._move(index)}
                 style={[
                   [
-                    styles.indicator, 
-                    setIndicatorSize(this.props.indicatorSize), 
+                    styles.indicator,
+                    setIndicatorSize(this.props.indicatorSize),
                     setIndicatorColor(this.props.indicatorColor)
-                  ], 
-                  position === index && 
-                  [
-                    styles.indicatorSelected, 
+                  ],
+                  position === index
+                  && [
+                    styles.indicatorSelected,
                     setIndicatorColor(this.props.indicatorSelectedColor)
                   ]
-                ]}>
-              <View></View>
-            </TouchableOpacity>);
-          })}
-        </View>
-        {/* END SECTION INDICATOR */}
-        {/* SECTION ARROW LEFT */}
-        <View 
-          style={[
-            layoutArrow(this.props.height, this.props.arrowSize), 
-            { left: 10, height: 50 },
-          ]}>
-          <TouchableOpacity
-            onPress={() => this._prev()}>
-            {
-              this.props.arrowRight == undefined ? 
-              <View 
-                style={[
-                  iconArrow(this.props.arrowSize), 
-                  iconArrowLeft(this.props.arrowSize),
-                ]}/>
-              : 
-              this.props.arrowLeft
+                ]}
+              >
+                <View />
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
+        {this.props.displaySideArrows && (
+          <React.Fragment>
+            {/* SECTION ARROW LEFT */}
+            <View
+              style={[
+                layoutArrow(this.props.height, this.props.arrowSize),
+                { left: 10, height: 50 },
+              ]}
+            >
+              <TouchableOpacity
+                onPress={() => this._prev()}
+              >
+                {
+              this.props.arrowRight == undefined
+                ? (
+                  <View
+                    style={[
+                      iconArrow(this.props.arrowSize),
+                      iconArrowLeft(this.props.arrowSize),
+                    ]}
+                  />
+                )
+                : this.props.arrowLeft
             }
-          </TouchableOpacity>
-        </View>
-        {/* END SECTION ARROW LEFT */}
-        {/* SECTION ARROW RIGHT */}
-        <View 
-          style={[
-            layoutArrow(this.props.height, this.props.arrowSize), 
-            { right: 10, height: 50 },
-          ]}>
-          <TouchableOpacity
-            onPress={() => this._next()}>
-            {
-              this.props.arrowRight == undefined ? 
-              <View 
-                style={[
-                  iconArrow(this.props.arrowSize), 
-                  iconArrowRight(this.props.arrowSize),
-                ]}/>
-              : 
-              this.props.arrowRight
+              </TouchableOpacity>
+            </View>
+            {/* END SECTION ARROW LEFT */}
+            {/* SECTION ARROW RIGHT */}
+            <View
+              style={[
+                layoutArrow(this.props.height, this.props.arrowSize),
+                { right: 10, height: 50 },
+              ]}
+            >
+              <TouchableOpacity
+                onPress={() => this._next()}
+              >
+                {
+              this.props.arrowRight == undefined
+                ? (
+                  <View
+                    style={[
+                      iconArrow(this.props.arrowSize),
+                      iconArrowRight(this.props.arrowSize),
+                    ]}
+                  />
+                )
+                : this.props.arrowRight
             }
-          </TouchableOpacity>
-        </View>
-        {/* END SECTION ARROW RIGHT */}
+              </TouchableOpacity>
+            </View>
+            {/* END SECTION ARROW RIGHT */}
+          </React.Fragment>
+        )}
       </View>
     );
   }
@@ -314,6 +333,8 @@ Slideshow.defaultProps = {
   indicatorSelectedColor: '#FFFFFF',
   scrollEnabled: true,
   arrowSize: 16,
+  displaySideArrows: true,
+  displayPageIndicator: true,
 }
 
 Slideshow.propTypes = {
@@ -334,7 +355,9 @@ Slideshow.propTypes = {
   arrowLeft: PropTypes.object,
   arrowRight: PropTypes.object,
 	onPress: PropTypes.func,
-	onPositionChanged: PropTypes.func,
+  onPositionChanged: PropTypes.func,
+  displayPageIndicator: PropTypes.bool,
+  displaySideArrows: PropTypes.bool,
 };
 
 const setIndicatorSize = function (size) {
